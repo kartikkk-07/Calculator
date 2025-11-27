@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Basic Calculator</title>
+
+    <style>
+      /* ----------- GLOBAL STYLES ----------- */
+      body {
+        margin: 0;
+        font-family: "Segoe UI", Arial, sans-serif;
+        background: #f0f2f5;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+      }
+
+      /* ----------- CALCULATOR BOX ----------- */
+      .calculator {
+        background: white;
+        padding: 20px;
+        border-radius: 16px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        width: 300px;
+      }
+
+      /* ----------- DISPLAY ----------- */
+      .display {
+        width: 90%;
+        height: 60px;
+        background: #e9eef4;
+        border: none;
+        border-radius: 10px;
+        margin-bottom: 15px;
+        padding: 15px;
+        font-size: 28px;
+        text-align: right;
+        outline: none;
+        color: #333;
+      }
+
+      /* ----------- BUTTON GRID ----------- */
+      .buttons {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 12px;
+      }
+
+      /* ----------- BUTTON GENERIC STYLE ----------- */
+      button {
+        padding: 15px;
+        font-size: 18px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: 0.2s;
+        font-weight: 600;
+      }
+
+      button:hover {
+        opacity: 0.85;
+      }
+
+      /* Colors */
+      .number {
+        background: #ffffff;
+        color: #333;
+        border: 1px solid #ddd;
+      }
+      .operator {
+        background: #4b7bec;
+        color: white;
+      }
+      .equal {
+        background: #20c997;
+        color: white;
+      }
+      .clear {
+        background: #ff6b6b;
+        color: white;
+        grid-column: span 2;
+      }
+      .allclear {
+        background: #ffa502;
+        color: white;
+        grid-column: span 2;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="calculator">
+      <input type="text" id="display" class="display" disabled />
+
+      <div class="buttons">
+        <!-- Clear buttons -->
+        <button class="clear" onclick="clearEntry()">C</button>
+        <button class="allclear" onclick="clearAll()">AC</button>
+
+        <!-- Numbers + Operators -->
+        <button class="number" onclick="press('7')">7</button>
+        <button class="number" onclick="press('8')">8</button>
+        <button class="number" onclick="press('9')">9</button>
+        <button class="operator" onclick="setOperation('/')">/</button>
+
+        <button class="number" onclick="press('4')">4</button>
+        <button class="number" onclick="press('5')">5</button>
+        <button class="number" onclick="press('6')">6</button>
+        <button class="operator" onclick="setOperation('*')">*</button>
+
+        <button class="number" onclick="press('1')">1</button>
+        <button class="number" onclick="press('2')">2</button>
+        <button class="number" onclick="press('3')">3</button>
+        <button class="operator" onclick="setOperation('-')">-</button>
+
+        <button class="number" onclick="press('0')">0</button>
+        <button class="number" onclick="press('.')">.</button>
+        <button class="equal" onclick="calculate()">=</button>
+        <button class="operator" onclick="setOperation('+')">+</button>
+      </div>
+    </div>
+
+    <script>
+      let currentInput = "";
+      let previousInput = "";
+      let operation = "";
+
+      // Add digit to the display
+      function press(num) {
+        currentInput += num;
+        updateDisplay(currentInput);
+      }
+
+      // Set the selected operator
+      function setOperation(op) {
+        if (currentInput === "") return;
+        if (previousInput !== "") calculate();
+
+        operation = op;
+        previousInput = currentInput;
+        currentInput = "";
+      }
+
+      // Update the calculator display
+      function updateDisplay(value) {
+        document.getElementById("display").value = value;
+      }
+
+      // Perform calculation
+      function calculate() {
+        if (previousInput === "" || currentInput === "") return;
+
+        let result;
+        let num1 = parseFloat(previousInput);
+        let num2 = parseFloat(currentInput);
+
+        if (operation === "+") result = num1 + num2;
+        if (operation === "-") result = num1 - num2;
+        if (operation === "*") result = num1 * num2;
+        if (operation === "/") {
+          if (num2 == 0) {
+            updateDisplay("Error");
+            currentInput = "";
+            previousInput = "";
+            return;
+          }
+          result = num1 / num2;
+        }
+
+        updateDisplay(result);
+        currentInput = result.toString();
+        previousInput = "";
+      }
+
+      // Clears only the current entered number
+      function clearEntry() {
+        currentInput = "";
+        updateDisplay("");
+      }
+
+      // Clears all calculator state
+      function clearAll() {
+        currentInput = "";
+        previousInput = "";
+        operation = "";
+        updateDisplay("");
+      }
+    </script>
+  </body>
+</html>
